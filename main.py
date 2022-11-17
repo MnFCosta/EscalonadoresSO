@@ -14,6 +14,7 @@ id_list = []
 AT_list = []
 BT_list = []
 
+
 #Algoritmos
 def FCFS(array):
     print("FCFS")
@@ -46,20 +47,23 @@ def SJF(array):
 
 def RR():
     print("RR")
+    quantum = int(algo.split()[1])
+    print(quantum)
 
 
 
 
 #Atribui Id, AT e BT a suas respectivas listas
 for i in range(np):
-    id = int(input[i+(2+i)+i])
-    id_list.append(id)
-    at = int(input[i+(3+i)+i])
-    AT_list.append(at)
-    bt = int(input[i+(4+i)+i])
-    BT_list.append(bt)
+    id = (input[i+2].strip()).split()
+    id_list.append(int(id[0]))
+    at = (input[i+2].strip()).split()
+    AT_list.append(int(at[1]))
+    bt = (input[i+2].strip()).split()
+    BT_list.append(int(bt[2]))
 
-#cria uma lista de processos
+
+# cria uma lista de processos
 pArray = [None] * np
 for i in range(np):
     pArray[i] = [AT_list[i], BT_list[i], id_list[i]]
@@ -69,10 +73,12 @@ for i in range(np):
 # Calcula o CT
 if algo.strip() == "FCFS":
     FCFS(pArray)
-if algo.strip() == "SJF":
+elif algo.strip() == "SJF":
     SJF(pArray)
-# else:
-#     RR()
+else:
+    RR()
+
+
 
 
 

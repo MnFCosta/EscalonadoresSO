@@ -1,12 +1,10 @@
-Processo 2: AT = 5 BT = 7 CT = 12 TAT = 7 WT = 0
-Processo 1: AT = 5 BT = 10 CT = 22 TAT = 17 WT = 7
-Processo 0: AT = 0 BT = 20 CT = 42 TAT = 42 WT = 22
+Processo 1: AT = 2 BT = 10 CT = 12 TAT = 10 WT = 0
+Processo 0: AT = 0 BT = 20 CT = 32 TAT = 32 WT = 12
 
-Tempo médio no sistema: 22.0
-Tempo médio de espera: 9.666666666666666
+Tempo médio no sistema: 21.0
+Tempo médio de espera: 6.0
 
 GRÁFICO DE GANT:
 
-P2: .....#######
-P1: .....-------##########
-P0: ----------------------####################
+P1: ..##########
+P0: ------------####################
