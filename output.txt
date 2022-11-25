@@ -1,0 +1,9 @@
+Processo 0: AT = 0 BT = 5 CT = 13 TAT = 13 WT = 8
+Processo 1: AT = 0 BT = 2 CT = 4 TAT = 4 WT = 2
+Processo 2: AT = 1 BT = 4 CT = 12 TAT = 11 WT = 7
+Processo 3: AT = 3 BT = 3 CT = 14 TAT = 11 WT = 8
+
+Tempo médio no sistema: 9.75
+Tempo médio de espera: 6.25
+
+[0, 0, 1, 1, 2, 2, 0, 0, 3, 3, 2, 2, 0, 3]

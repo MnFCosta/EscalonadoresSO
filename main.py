@@ -21,54 +21,81 @@ def FCFS(array):
     print("FCFS")
     time = 0
     ap = 0
-    rp = 0
     fila = []
     pronto = 0
-    while(pronto<np):
-        for i in range (np):
-            if time==array[i][0]:
+    while (pronto < np):
+        #coloca todos os processos em uma fila de espera
+        for i in range(np):
+            if time == array[i][0]:
                 fila.append(array[i])
-                ap+=1
-                rp+=1
-        time+=1
+                ap += 1
+        time += 1
+
         if time == np+1:
-            for i in range (np):
+            #executa o primeiro processo
+            for i in range(np):
                 if i == 0:
+                    #calcula o CT do processo
                     var = fila[i][1] + fila[i][0]
-                    print(f"PROCESS0 {i} CT = {var}")
-                    pronto+=1
+                    #adiciona o CT a lista de CTs
                     ct.append(var)
-                    for j in range (fila[i][1]):
+                    #Adiciona o processo ao gráfico de gant
+                    for j in range(fila[i][1]):
                         gant.append(fila[i][2])
+                    #Incrementa a variável pronto
+                    pronto += 1
+            #executa os próximos processos e faz os mesmos passos
                 else:
                     var = var + fila[i][1]
-                    print(f"PROCESS0 {i} CT = {var}")
                     ct.append(var)
                     pronto += 1
-                    for j in range (fila[i][1]):
+                    for j in range(fila[i][1]):
                         gant.append(fila[i][2])
     return fila
+
+def remover_prontos(a, b):
+    for i in a[:]:
+        if i in b:
+            a.remove(i)
 def SJF(array):
     print("SJF")
     time = 0
     ap = 0
-    rp = 0
     fila = []
     pronto = 0
-    var = 0
-
+    filaP = []
     while(pronto<np):
-        for i in range (np):
-            if time==array[i][0]:
-                fila.append(array[i])
+        #percorra os elementos de array e cheque se o AT de algum deles é igual ou menor que tempo
+        #caso sejam adicione o elemento a fila de processos que já chegaram
+        for i in array:
+            if time >= i[0]:
+                fila.append(i)
                 ap+=1
-                rp+=1
-        time+=1
-        if ap == np:
-            print(fila)
-            fila.sort(key=lambda x: (x[1], x[0]))
-            print(fila)
-            pronto = np
+        print(f"Fila após sair do loop: {fila} tempo {time}")
+        #CASO UM PROCESSO JÁ EXECUTADO TENHA SIDO ADICIONADO A FILA, RETIRE-O
+        remover_prontos(fila,filaP)
+        print(f"Fila após prontos terem sido retirados: {fila} tempo {time}")
+        if len(fila) > 0:
+            fila.sort(key=lambda  x : (x[1]))
+            print(f"Fila após terem sido organizados: {fila} tempo {time}")
+            for index, item in enumerate(fila):
+                if not index:
+                    for _ in range (item[1]):
+                        gant.append(item[2])
+                    time+=item[1]
+                    ct.append(time)
+                    pronto+=1
+                    #ADICIONAR ESTADO PRONTO AO PROCESSO
+                    filaP.append(item)
+                    fila.pop(fila.index(item))
+                    #RETIRA O PROCESSO DA FILA DE EXECUÇÃO
+            fila = []
+        print(gant)
+    print(filaP)
+    return filaP
+
+#Função que muda posições dos elementos da lista baseado em quanto tempo estão esperando
+#Organiza a fila de modo que o processo que está esperando a mais tempo tenha prioridade
 def shiftFila(alist):
     temp = alist[0]
     for i in range(len(alist)-1):
@@ -79,47 +106,50 @@ def RR(array):
     print("RR")
     quantum = int(algo.split()[1])
     fila = []
-    time= 0
-    ap = 0 #processos que chegaram
-    rp = 0 #processos prontos para executar
-    pronto = 0#processo finalizados
-    trocafila= 0
-    global gant
+    time = 0
+    ap = 0  # processos que chegaram
+    rp = 0  # processos prontos para executar
+    pronto = 0  # processo finalizados
+    trocafila = 0
 
-    while(pronto<np):
-
-        #adiciona processos a fila caso o atual tempo seja maior ou igual ao AT do processo
-        for i in range(ap,np):
-            if time>=array[i][0]:
+    while (pronto < np):
+        # adiciona processos a fila caso o atual tempo seja maior ou igual ao AT do processo
+        for i in range(ap, np):
+            if time >= array[i][0]:
                 fila.append(array[i])
                 print(f"TEMPO {time} FILA {fila}")
-                ap+=1
-                rp+=1
+                ap += 1
+                rp += 1
 
-        #caso o numero de processos seja menor do que 1
-        if rp<1:
-            gant.append("sus")
-            time+=1
+        # caso o numero de processos prontos para executar seja menor do que 1 incremente o tempo e continue
+        if rp < 1:
+            time += 1
             continue
 
+        #caso a primeira execução tenha sido feita, comece a ordenar processos por quanto os mesmos estão esperando
         if trocafila:
             fila = shiftFila(fila)
 
-
-        if fila[0][1]>0:
+        #se o BT do primeiro elemento da fila for maior que 0 (não terminou ainda de ser executado)
+        if fila[0][1] > 0:
+            #E for maior do que o quantum (pode ainda ser executado por quantum)
             if fila[0][1] > quantum:
+                #execute-o por quantum e subtraia seu BT e incremente tempo por quantum
                 for g in range(time, time + quantum):
                     gant.append(fila[0][2])
-                time+=quantum
-                fila[0][1]-=quantum
+                time += quantum
+                fila[0][1] -= quantum
+            #caso for maior do que 0 porém menor do que quantum
             else:
+                #execute o pelo resto de tempo que falta (atual valor de BT), incremente o tempo pelo BT restante
+                #seu BT agora é igual a 0 (não precisa mais ser executado), o processo está pronto
                 for g in range(time, time + fila[0][1]):
                     gant.append(fila[0][2])
-                time+=fila[0][1]
-                fila[0][1]=0
-                pronto+=1
-                rp-=1
-            trocafila=1
+                time += fila[0][1]
+                fila[0][1] = 0
+                pronto += 1
+                rp -= 1
+            trocafila = 1
 
 #Atribui Id, AT e BT a suas respectivas listas
 for i in range(np):
@@ -139,7 +169,7 @@ for i in range(np):
 if algo.strip() == "FCFS":
     pArray = FCFS(pArray)
 elif algo.strip() == "SJF":
-    SJF(pArray)
+    pArray = SJF(pArray)
 else:
     RR(pArray)
 
@@ -156,17 +186,14 @@ if algo.split()[0] == "RR":
     for i in range(np):
         ct.append(len(gant) - gant[::-1].index(i))
 
-
-
 # Calcula o TAT e o WT
-print(pArray)
+
 for i in range(np):
     tat.append(ct[i] - pArray[i][0])
     wt.append(tat[i] - pArray[i][1])
 
 #Output do resultado do algoritmo
 output = open("output.txt", 'w')
-
 
 #TABELA DE PROCESSOS
 for i in range(np):
@@ -187,24 +214,3 @@ output.write(wt)
 #GRÁFICO DE GANT
 
 output.write(str(gant))
-# output.write("GRÁFICO DE GANT:")
-# space = f"\n"
-# output.write(space)
-# output.write(space)
-# for i in range(np):
-#     if i == 0:
-#         gantOn = f"#" * 2
-#         gantVoid = f"." * pArray[i][0]
-#         output.write(f"P{pArray[i][2]}: ")
-#         output.write(gantVoid)
-#         output.write(gantOn)
-#         output.write(space)
-#     else:
-#         gantOn = f"#" * 2
-#         gantVoid = f"." * pArray[i][0]
-#         gantOff = f"-" * (ct[i-1] - pArray[i][0])
-#         output.write(f"P{pArray[i][2]}: ")
-#         output.write(gantVoid)
-#         output.write(gantOff)
-#         output.write(gantOn)
-#         output.write(space)
